@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
+
+<script>
+function gettext(pdfUrl){
+var pdf = PDFJS.getDocument(pdfUrl);
+return pdf.then(function(pdf) { // get all pages text
+//     var maxPages = pdf.pdfInfo.numPages;
+//     var countPromises = []; // collecting all page promises
+//     for (var j = 1; j <= maxPages; j++) {
+//        var page = pdf.getPage(j);
+			pdf.getPage(1).then(function(page){
+			
+    //   var defaultPromise = page.getAnnotations().then(function (data) {
+ 
+    //     console.log(data.length);
+ 
+    //   });
+
+    var defaultPromise = page.getTextContent().then(function (content) {
+        // Content contains lots of information about the text layout and
+        // styles, but we need only strings at the moment
+        var strings = content.items.map(function (item) {
+          return item.str;
+        });
+        console.log('## Text Content');
+        console.log(strings.join(' '));
+      }).then(function () {
+        console.log();
+      }); 
+      
+});      
+
+
+});
+}
+
+// waiting on gettext to finish completion, or error
+
+
+
+/* gettext("http://www.pdfill.com/example/pdf_commenting_new.pdf").then(function (text) {
+  alert('parse ' + text);
+}, function (reason) {
+  console.error(reason);
+});
+ */    </script>
+
+<script>
+//Step 1: Get the file from the input element
+                
+            function loader (val) 
+            {
+
+              var file = val.files[0];
+
+              //Step 2: Read the file using file reader
+              var fileReader = new FileReader();  
+
+              fileReader.onload = function() {
+
+                    //Step 4:turn array buffer into typed array
+                var typedarray = new Uint8Array(this.result);
+
+                 //Step 5:PDFJS should be able to read this
+                // PDFJS.getDocument(typedarray).then(function(pdf) {
+                //       console.log("here again");
+                // });
+
+                gettext(typedarray).then(function (text) {
+  console.log("so far ok");
+}, function (reason) {
+  console.error(reason);
+});
+
+
+            };
+
+           //Step 3:Read the file as ArrayBuffer
+            fileReader.readAsArrayBuffer(file);
+
+         }
+        </script>
+
+
+
+</head>
+<body>
+    <p1> tester </p1>
+    <div><input type="file" name="loadPDF" onchange="loader(this);"></div>
+
+
+    </body>
+
+    </html>
